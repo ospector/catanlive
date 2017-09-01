@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<HTML>
+ <HEAD>
+  <TITLE> Catan Live </TITLE>
+ </HEAD>
+
+ <script>
+   var stepsLeft = 100;
+   var stepLength = 60*1000;
+   var paused=true;
+
+   function step() {
+     if (paused) {
+       return;
+     }
+     var d1 = dval();
+     var d2 = dval();
+     var n = d1 + d2;
+     if (n==7) {
+       bandits();
+     } else {
+       display(n + "   ["+stepsLeft+"]",n);
+       if (stepsLeft>0) {
+         setTimeout(step,stepLength);
+       }
+     }
+     stepsLeft--;
+     if (stepsLeft<=0) {
+       display("Done","done");
+     }
+   }
+
+   function bandits() {
+     var players = document.getElementById("players").value.split(",");
+     var player = players[stepsLeft%(players.length)];
+     display(player,"bandits");
+   }
+
+   function dval() {
+     return Math.floor((Math.random() * 6) + 1);
+   }
+
+   function display(str,sound) {
+     var el = document.getElementById("number");
+     var snd = document.getElementById("sound");
+     snd.src=sound+".mp3";
+     snd.play();
+     el.innerText = str;
+   }
+
+   function pause() {
+     paused=true;
+   }
+
+   function resume() {
+     paused = false;
+     step();
+   }
+ </script>
+ 
+ <style>
+   span:hover {
+     cursor:pointer;
+   }
+   span {
+     display:inline-block;
+     width: 120px;
+     margin: 3px 10px;
+     border: 1px solid black;
+     text-align: center;
+   }
+
+   body {
+     background-image: url("bg.jpg");
+     background-repeat: no-repeat;
+     width: fit-content;
+   }
+
+   label {
+    background-color: rgba(30,250,30,0.4);
+    color: ghostwhite;
+    border-radius: 3px;
+    padding: 0 4px 3px;
+    margin-right: 3px;
+   }
+   input {
+    border-radius: 4px;
+    height: 16px;
+    border-color: transparent;
+    }
+ </style> 
+
+ <BODY>
+
+ <h1 id="number">Press Resume</h1>
+ <audio id="sound" src=""></audio>
+
+ <label for="players">Players:</label><input id="players" type="text" width="450"/>
+
+ <p>
+ <span onclick="javascript:resume()">Resume</span>
+ <span onclick="javascript:pause()">Pause</span>
+ </p>
+  
+ </BODY>
+</HTML>
